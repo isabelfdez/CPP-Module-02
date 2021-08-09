@@ -6,7 +6,7 @@
 /*   By: isfernan <isfernan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/05 15:28:28 by isfernan          #+#    #+#             */
-/*   Updated: 2021/08/06 18:26:46 by isfernan         ###   ########.fr       */
+/*   Updated: 2021/08/09 13:38:31 by isfernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,7 @@ int		count_digits(const int num)
 Fixed::Fixed(const int num)
 {
 	std::cout << "Int constructor called" << std::endl;
-	this->_fpv = (int)num;
-	this->_radix = count_digits(num);
+	this->_fpv = (int)num * 256;
 }
 
 int		fix(float n)
@@ -55,12 +54,8 @@ Fixed::Fixed(const float num)
 	float   aux = num, aux2 = num;
 
 	std::cout << "Float constructor called" << std::endl;
-	this->_radix = 0;
 	while ((int) aux != aux)
-	{
 		aux = aux * 10;
-		this->_radix++;
-	}
 	this->_fpv = fix(aux2);
 }
 
@@ -73,7 +68,6 @@ Fixed&	Fixed::operator=(Fixed const &instance)
 {
 	std::cout << "Assignation operator called" << std::endl;
 	this->_fpv = instance.getRawBits();
-	this->_radix = instance._radix;
 	return (*this);
 }
 
@@ -87,13 +81,19 @@ void	Fixed::setRawBits(int const raw)
 	this->_fpv = raw;
 }
 
-std::ostream& operator<<(std::ostream &o, Fixed const rhs)
+std::ostream& operator<<(std::ostream &o, Fixed const &rhs)
 {
-	float	n;
-
-	n = rhs.getRawBits() / 256;
-	std
-	o << n;
+	o << rhs.toFloat();
 	return (o);
+}
+
+int		Fixed::toInt(void) const
+{
+	return((int)this->getRawBits() / 256);
+}
+
+float	Fixed::toFloat(void) const
+{
+	return ((float)this->getRawBits() / 256);
 }
 
